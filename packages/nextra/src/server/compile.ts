@@ -13,6 +13,7 @@ import remarkSmartypants from 'remark-smartypants'
 import type { Pluggable } from 'unified'
 import type { LoaderOptions, NextraConfig } from '../types.js'
 import { MARKDOWN_URL_EXTENSION_RE } from './constants.js'
+import rehypeKatexNotranslate from 'rehype-katex-notranslate'
 import { recmaRewrite } from './recma-plugins/index.js'
 import {
   DEFAULT_REHYPE_PRETTY_CODE_OPTIONS,
@@ -178,8 +179,8 @@ export async function compileMdx(
           (typeof latex === 'object'
             ? latex.renderer === 'mathjax'
               ? [rehypeBetterReactMathjax, latex.options, isRemoteContent]
-              : [rehypeKatex, latex.options]
-            : rehypeKatex),
+              : [[rehypeKatex, latex.options], rehypeKatexNotranslate]
+            : [rehypeKatex, rehypeKatexNotranslate]),
         ...(codeHighlight === false
           ? []
           : [
